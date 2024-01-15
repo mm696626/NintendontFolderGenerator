@@ -63,6 +63,9 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                 ISOFilePathSaver isoFilePathSaver = new ISOFilePathSaver();
                 isoFilePathSaver.writeISOFilePathsToFile(gameFileList);
             }
+            else {
+                JOptionPane.showMessageDialog(this, "There are no games in this folder");
+            }
         }
 
         if (e.getSource() == generateNintendontGamesFolder) {
