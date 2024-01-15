@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class NintendontFolderGeneratorUI extends JFrame implements ActionListener {
 
 
-    //where to grab ogg files from
+    //where to grab iso or ciso files from
     private String gameFolderPath = "";
     private JButton generateNintendontGamesFolder, pickGamesFolder;
 
