@@ -73,10 +73,16 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
             if (isoFilePaths.exists()) {
                 NintendontFolderGenerator nintendontFolderGenerator = new NintendontFolderGenerator();
                 try {
-                    nintendontFolderGenerator.generateNintendontFolder();
-                    OldFileCleaner oldFileCleaner = new OldFileCleaner();
-                    oldFileCleaner.cleanFiles();
-                    JOptionPane.showMessageDialog(this, "Folder successfully generated!");
+                    boolean isGenerationSuccessful = nintendontFolderGenerator.generateNintendontFolder();
+
+                    if (isGenerationSuccessful) {
+                        OldFileCleaner oldFileCleaner = new OldFileCleaner();
+                        oldFileCleaner.cleanFiles();
+                        JOptionPane.showMessageDialog(this, "Folder successfully generated!");
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(this, "Folder was not successfully generated!");
+                    }
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Something went wrong when generating the games folder");
                 }

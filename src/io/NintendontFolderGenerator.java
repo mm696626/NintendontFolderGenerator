@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class NintendontFolderGenerator {
 
-    public void generateNintendontFolder() throws IOException {
+    public boolean generateNintendontFolder() throws IOException {
 
         ArrayList<File> files = getFilePathsFromFile();
         ArrayList<File> multiDiscFiles = getMultiDiscFilePathsFromFile();
@@ -20,10 +20,15 @@ public class NintendontFolderGenerator {
         String gamesFolderPath = gamesFolderBaseDir + "games";
         File gamesFolder = new File(gamesFolderPath);
 
+        boolean isGameFilesCopied = false;
+        boolean ismultiDiscGameFilesCopied = false;
+
         if (gamesFolder.mkdirs()) {
-            copyGameFiles(files, gamesFolder.getAbsolutePath() + filePathSeparator, filePathSeparator);
-            copyMultiDiscGameFiles(multiDiscFiles, gamesFolder.getAbsolutePath() + filePathSeparator, filePathSeparator);
+            isGameFilesCopied = copyGameFiles(files, gamesFolder.getAbsolutePath() + filePathSeparator, filePathSeparator);
+            ismultiDiscGameFilesCopied = copyMultiDiscGameFiles(multiDiscFiles, gamesFolder.getAbsolutePath() + filePathSeparator, filePathSeparator);
         }
+
+        return isGameFilesCopied && ismultiDiscGameFilesCopied;
     }
 
     private String getGamesFolderBaseDir() {
@@ -76,7 +81,7 @@ public class NintendontFolderGenerator {
         return files;
     }
 
-    private void copyGameFiles(ArrayList<File> files, String destinationPath, String filePathSeparator) throws IOException {
+    private boolean copyGameFiles(ArrayList<File> files, String destinationPath, String filePathSeparator) throws IOException {
 
         for (int i=0; i<files.size(); i++) {
             String isoFilePath = files.get(i).getAbsolutePath();
@@ -92,9 +97,13 @@ public class NintendontFolderGenerator {
                 Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
         }
+
+        return true;
     }
 
-    private void copyMultiDiscGameFiles(ArrayList<File> files, String destinationPath, String filePathSeparator) throws IOException {
+    private boolean copyMultiDiscGameFiles(ArrayList<File> files, String destinationPath, String filePathSeparator) throws IOException {
+
+        boolean successfullyCopied = true;
 
         for (int i=0; i<files.size(); i++) {
             String isoFilePath = files.get(i).getAbsolutePath();
@@ -121,6 +130,12 @@ public class NintendontFolderGenerator {
                     Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
             }
+
+            else {
+                successfullyCopied = false;
+            }
         }
+
+        return successfullyCopied;
     }
 }
