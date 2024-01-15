@@ -12,7 +12,7 @@
     * It will look through subfolders as well
 * Once your games have been found, just press Generate Nintendont Games Folder
 * Move that newly created folder onto the root of your SD card or USB
-* Have fun playing your games!
+* Have fun playing your games on your Wii or Wii U!
 
 ### Note for Multi Disc Games
 * For multi disc games, your discs must have (Disc 1) and (Disc 2) in their file names
