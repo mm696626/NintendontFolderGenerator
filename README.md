@@ -14,6 +14,6 @@
 * Move that newly created folder onto the root of your SD card or USB
 * Have fun playing your games!
 
-### Note
+### Note for Multi Disc Games
 * For multi disc games, your discs must have (Disc 1) and (Disc 2) in their file names
   * This tool will not work correctly otherwise for multi disc games
