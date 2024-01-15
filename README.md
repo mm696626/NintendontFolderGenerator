@@ -17,3 +17,5 @@
 ### Note for Multi Disc Games
 * For multi disc games, your discs must have (Disc 1) and (Disc 2) in their file names
   * This tool will not work correctly otherwise for multi disc games
+  * Generally have your notation of disc number at the end (this tool assumes this notation for multi disc games)
+    * Example: Game Title (Disc Number)

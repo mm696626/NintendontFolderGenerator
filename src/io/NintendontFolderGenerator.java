@@ -83,7 +83,6 @@ public class NintendontFolderGenerator {
             String fileExtension = isoFilePath.substring(isoFilePath.lastIndexOf("."));
             String isoFileName = isoFilePath.substring(isoFilePath.lastIndexOf(filePathSeparator)+1, isoFilePath.lastIndexOf("."));
             String copiedIsoFolderPath = destinationPath + isoFileName;
-
             File gameFolder = new File(copiedIsoFolderPath);
 
             if (gameFolder.mkdirs()) {
@@ -102,22 +101,25 @@ public class NintendontFolderGenerator {
             String fileExtension = isoFilePath.substring(isoFilePath.lastIndexOf("."));
             String isoFileName = isoFilePath.substring(isoFilePath.lastIndexOf(filePathSeparator)+1, isoFilePath.lastIndexOf("."));
             isoFileName = isoFileName.substring(0, isoFileName.lastIndexOf("(Disc ")).trim();
-            String copiedIsoFolderPath = destinationPath + isoFileName;
 
-            File gameFolder = new File(copiedIsoFolderPath);
+            //validate the file name isn't completely gone from trimming the disc notation (naming a file (Disc 1) would break this code)
+            if (isoFileName.length() > 0) {
+                String copiedIsoFolderPath = destinationPath + isoFileName;
+                File gameFolder = new File(copiedIsoFolderPath);
 
-            if (gameFolder.mkdirs() || gameFolder.exists()) {
-                String gameFolderPath = gameFolder.getAbsolutePath();
+                if (gameFolder.mkdirs() || gameFolder.exists()) {
+                    String gameFolderPath = gameFolder.getAbsolutePath();
 
-                String copiedISOFilePath = "";
-                if (isoFilePath.contains("(Disc 1)")) {
-                    copiedISOFilePath = gameFolderPath + filePathSeparator + "game" + fileExtension;
+                    String copiedISOFilePath = "";
+                    if (isoFilePath.contains("(Disc 1)")) {
+                        copiedISOFilePath = gameFolderPath + filePathSeparator + "game" + fileExtension;
+                    }
+                    else {
+                        copiedISOFilePath = gameFolderPath + filePathSeparator + "disc2" + fileExtension;
+                    }
+                    File copiedIsoFile = new File(copiedISOFilePath);
+                    Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
-                else {
-                    copiedISOFilePath = gameFolderPath + filePathSeparator + "disc2" + fileExtension;
-                }
-                File copiedIsoFile = new File(copiedISOFilePath);
-                Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
         }
     }
