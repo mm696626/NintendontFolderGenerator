@@ -14,41 +14,20 @@ public class NintendontFolderGenerator {
     public void generateNintendontFolder() throws IOException {
 
         ArrayList<File> files = getFilePathsFromFile();
-        String modFolderName = getModFolderName();
-        String modBaseDir = getModBaseDir();
-        String filePathSeparator = modBaseDir.substring(modBaseDir.length()-1);
-        String modFolderPath = modBaseDir + modFolderName;
+        String gamesFolderBaseDir = getGamesFolderBaseDir();
+        String filePathSeparator = gamesFolderBaseDir.substring(gamesFolderBaseDir.length()-1);
+        String gamesFolderPath = gamesFolderBaseDir + "games";
+        File gamesFolder = new File(gamesFolderPath);
 
-        File modFolder = new File(modFolderPath);
-
-        if (modFolder.mkdirs()) {
-
-            //copy mod.json
-            File modJSON = new File("mod.json");
-            String copiedModJSONPath = modFolder.getAbsolutePath() + filePathSeparator + "mod.json";
-            File copiedModJSON = new File(copiedModJSONPath);
-            Files.copy(modJSON.toPath(), copiedModJSON.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-            String audioFolderPath = modFolderPath + filePathSeparator + "audio";
-
-            File audioFolder = new File(audioFolderPath);
-            if (audioFolder.mkdirs()) {
-
-                //copy audio_replacements.json
-                File audioReplacementsJSON = new File("audio_replacements.json");
-                String copiedAudioReplacementsJSONPath = audioFolder.getAbsolutePath() + filePathSeparator + "audio_replacements.json";
-                File copiedAudioReplacementsJSON = new File(copiedAudioReplacementsJSONPath);
-                Files.copy(audioReplacementsJSON.toPath(), copiedAudioReplacementsJSON.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-                copyAudioFiles(files, audioFolder.getAbsolutePath() + filePathSeparator, filePathSeparator);
-            }
+        if (gamesFolder.mkdirs()) {
+            copyGameFiles(files, gamesFolder.getAbsolutePath() + filePathSeparator, filePathSeparator);
         }
     }
 
-    private String getModBaseDir() {
-        File modJSON = new File("mod.json");
-        String modJSONPath = modJSON.getAbsolutePath();
-        return modJSONPath.substring(0, modJSONPath.lastIndexOf("mod.json"));
+    private String getGamesFolderBaseDir() {
+        File isoFilePaths = new File("isoFilePaths.txt");
+        String isoFilePathsFilePath = isoFilePaths.getAbsolutePath();
+        return isoFilePathsFilePath.substring(0, isoFilePathsFilePath.lastIndexOf("isoFilePaths.txt"));
     }
 
     private ArrayList<File> getFilePathsFromFile() {
@@ -57,11 +36,11 @@ public class NintendontFolderGenerator {
         Scanner inputStream = null;
 
         try {
-            inputStream = new Scanner (new FileInputStream("oggFilePaths.txt"));
+            inputStream = new Scanner (new FileInputStream("isoFilePaths.txt"));
         }
         catch (FileNotFoundException e)
         {
-            System.out.println("OGG File Paths file does not exist");
+            System.out.println("ISO File Paths file does not exist");
             return null;
         }
 
@@ -73,70 +52,13 @@ public class NintendontFolderGenerator {
         return files;
     }
 
-    private String getModFolderName() {
-        String modFolderName = "";
-
-        Scanner inputStream = null;
-
-        try {
-            inputStream = new Scanner (new FileInputStream("mod.json"));
-        }
-        catch (FileNotFoundException e)
-        {
-            System.out.println("Mod JSON File does not exist");
-            return null;
-        }
-
-        String line = "";
-        while (inputStream.hasNextLine()) {
-            line = inputStream.nextLine();
-            if (line.contains("\"Name\"")) {
-                modFolderName = line.substring(line.indexOf(":") + 3, line.lastIndexOf("\""));
-                break;
-            }
-        }
-
-        modFolderName = modFolderName.replaceAll("[^a-zA-Z0-9]", "");
-        inputStream.close();
-        return modFolderName;
-    }
-
-    private void copyAudioFiles(ArrayList<File> files, String destinationPath, String filePathSeparator) throws IOException {
+    private void copyGameFiles(ArrayList<File> files, String destinationPath, String filePathSeparator) throws IOException {
 
         for (int i=0; i<files.size(); i++) {
-            String audioFilePath = files.get(i).getAbsolutePath();
-            String copiedAudioFilePath = destinationPath + audioFilePath.substring(audioFilePath.lastIndexOf(filePathSeparator)+1);
-            File copiedAudioFile = new File(copiedAudioFilePath);
-
-            if (isAudioFileUsed(copiedAudioFile)) {
-                Files.copy(files.get(i).toPath(), copiedAudioFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            }
+            String isoFilePath = files.get(i).getAbsolutePath();
+            String copiedIsoFilePath = destinationPath + isoFilePath.substring(isoFilePath.lastIndexOf(filePathSeparator)+1);
+            File copiedIsoFile = new File(copiedIsoFilePath);
+            Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
-    }
-
-    private boolean isAudioFileUsed(File audioFile) {
-
-        Scanner inputStream = null;
-
-        try {
-            inputStream = new Scanner (new FileInputStream("audio_replacements.json"));
-        }
-        catch (FileNotFoundException e)
-        {
-            System.out.println("Audio Replacements File does not exist");
-            return false;
-        }
-
-        String line = "";
-        while (inputStream.hasNextLine()) {
-            line = inputStream.nextLine();
-            if (line.contains(audioFile.getName())) {
-                inputStream.close();
-                return true;
-            }
-        }
-
-        inputStream.close();
-        return false;
     }
 }

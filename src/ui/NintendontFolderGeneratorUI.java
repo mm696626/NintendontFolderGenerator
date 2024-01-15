@@ -73,13 +73,13 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                     nintendontFolderGenerator.generateNintendontFolder();
                     OldFileCleaner oldFileCleaner = new OldFileCleaner();
                     oldFileCleaner.cleanFiles();
-                    JOptionPane.showMessageDialog(this, "Mod successfully generated!");
+                    JOptionPane.showMessageDialog(this, "Folder successfully generated!");
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Something went wrong when generating the mod folder");
+                    JOptionPane.showMessageDialog(this, "Something went wrong when generating the games folder");
                 }
             }
             else {
-                JOptionPane.showMessageDialog(this, "You haven't generated an audio replacements or mod json file!");
+                JOptionPane.showMessageDialog(this, "You haven't selected any games!");
             }
         }
     }
