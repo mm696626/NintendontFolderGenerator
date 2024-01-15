@@ -3,6 +3,6 @@ package validation;
 public class ExtensionValidator {
 
     public boolean isExtensionValid(String fileName) {
-        return fileName.endsWith("iso") || fileName.endsWith("ciso") || fileName.endsWith("txt");
+        return fileName.endsWith("iso") || fileName.endsWith("ciso");
     }
 }
