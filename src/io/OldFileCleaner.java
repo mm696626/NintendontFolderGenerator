@@ -17,4 +17,12 @@ public class OldFileCleaner {
             System.out.println("ISO Multidisc Paths File could not be deleted");
         }
     }
+
+    public void deleteCopiedISOFilePaths() {
+        File copiedISOFilePathsFile = new File("copiedIsoFilePaths.txt");
+
+        if (!copiedISOFilePathsFile.delete()) {
+            System.out.println("ISO Paths File could not be deleted");
+        }
+    }
 }

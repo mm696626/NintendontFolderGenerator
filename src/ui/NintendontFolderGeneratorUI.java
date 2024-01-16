@@ -106,6 +106,8 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                 try {
                     MD5HashValidator md5HashValidator = new MD5HashValidator();
                     md5HashValidator.validateHashes();
+                    OldFileCleaner oldFileCleaner = new OldFileCleaner();
+                    oldFileCleaner.deleteCopiedISOFilePaths();
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Something went wrong when validating hashes!");
                 }
