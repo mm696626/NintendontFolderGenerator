@@ -4,6 +4,7 @@ import io.ISOFilePathSaver;
 import io.NintendontFolderGenerator;
 import io.OldFileCleaner;
 import validation.ExtensionValidator;
+import validation.MD5HashValidator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +18,7 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
 
     //where to grab iso or ciso files from
     private String gameFolderPath = "";
-    private JButton generateNintendontGamesFolder, pickGamesFolder;
+    private JButton generateNintendontGamesFolder, pickGamesFolder, validateGameFilesMD5;
 
     private ArrayList<File> gameFileList;
     GridBagConstraints gridBagConstraints = null;
@@ -32,6 +33,9 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
         generateNintendontGamesFolder = new JButton("Generate Nintendont Games Folder");
         generateNintendontGamesFolder.addActionListener(this);
 
+        validateGameFilesMD5 = new JButton("Validate MD5 Hashes in Games Folder");
+        validateGameFilesMD5.addActionListener(this);
+
         setLayout(new GridBagLayout());
         gridBagConstraints = new GridBagConstraints();
 
@@ -42,6 +46,10 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
         gridBagConstraints.gridx=1;
         gridBagConstraints.gridy=0;
         add(generateNintendontGamesFolder, gridBagConstraints);
+
+        gridBagConstraints.gridx=2;
+        gridBagConstraints.gridy=0;
+        add(validateGameFilesMD5, gridBagConstraints);
     }
 
     @Override
@@ -89,6 +97,21 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
             }
             else {
                 JOptionPane.showMessageDialog(this, "You haven't selected any games!");
+            }
+        }
+
+        if (e.getSource() == validateGameFilesMD5) {
+            File copiedIsoFilePaths = new File("copiedIsoFilePaths.txt");
+            if (copiedIsoFilePaths.exists()) {
+                try {
+                    MD5HashValidator md5HashValidator = new MD5HashValidator();
+                    md5HashValidator.validateHashes();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Something went wrong when validating hashes!");
+                }
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "You haven't generated a games folder!");
             }
         }
     }

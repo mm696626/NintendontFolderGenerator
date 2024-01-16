@@ -5,11 +5,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class NintendontFolderGenerator {
+
+    private ArrayList<Path> copiedFilePaths = new ArrayList<>(); //the paths of the copied .iso and .ciso files (will be used if the user wants to validate MD5 checksums)
 
     public boolean generateNintendontFolder() throws IOException {
 
@@ -27,6 +30,9 @@ public class NintendontFolderGenerator {
             isGameFilesCopied = copyGameFiles(files, gamesFolder.getAbsolutePath() + filePathSeparator, filePathSeparator);
             ismultiDiscGameFilesCopied = copyMultiDiscGameFiles(multiDiscFiles, gamesFolder.getAbsolutePath() + filePathSeparator, filePathSeparator);
         }
+
+        CopiedISOFilePathSaver copiedISOFilePathSaver = new CopiedISOFilePathSaver();
+        copiedISOFilePathSaver.writeCopiedISOFilePathsToFile(copiedFilePaths);
 
         return isGameFilesCopied && ismultiDiscGameFilesCopied;
     }
@@ -95,6 +101,7 @@ public class NintendontFolderGenerator {
                 String copiedISOFilePath = gameFolderPath + filePathSeparator + "game" + fileExtension;
                 File copiedIsoFile = new File(copiedISOFilePath);
                 Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                copiedFilePaths.add(copiedIsoFile.toPath());
             }
         }
 
@@ -128,6 +135,7 @@ public class NintendontFolderGenerator {
                     }
                     File copiedIsoFile = new File(copiedISOFilePath);
                     Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    copiedFilePaths.add(copiedIsoFile.toPath());
                 }
             }
 
