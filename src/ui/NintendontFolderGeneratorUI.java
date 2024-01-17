@@ -105,7 +105,12 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
             if (copiedIsoFilePaths.exists()) {
                 try {
                     MD5HashValidator md5HashValidator = new MD5HashValidator();
-                    md5HashValidator.validateHashes();
+                    if (md5HashValidator.validateHashes()) {
+                        JOptionPane.showMessageDialog(this, "All hashes are known good dumps!");
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(this, "Not all hashes are known good dumps! Please look in the generated log file!");
+                    }
                     OldFileCleaner oldFileCleaner = new OldFileCleaner();
                     oldFileCleaner.deleteCopiedISOFilePaths();
                 } catch (Exception ex) {

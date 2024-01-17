@@ -16,9 +16,11 @@ import java.util.Scanner;
 
 public class MD5HashValidator {
 
-    public void validateHashes() throws IOException, NoSuchAlgorithmException {
+    public boolean validateHashes() throws IOException, NoSuchAlgorithmException {
         ArrayList<String> copiedFilePaths = getFilePathsFromCopiedISOFiles();
         ExtensionValidator extensionValidator = new ExtensionValidator();
+
+        boolean successfulValidation = true;
 
         PrintWriter outputStream = null;
 
@@ -40,6 +42,7 @@ public class MD5HashValidator {
                 //This is why the file extension was validated as an .iso earlier
                 if (fileSizeInBytes != 1459978240) {
                     outputStream.println(copiedFilePath + " was not the correct size for a good .iso dump.");
+                    successfulValidation = false;
                 }
                 else {
                     String checksum = calculateMD5(copiedFilePath);
@@ -50,6 +53,7 @@ public class MD5HashValidator {
                     }
                     else {
                         outputStream.println(copiedFilePath + " does not have a known hash for a GameCube game .iso dump.");
+                        successfulValidation = false;
                     }
                 }
             }
@@ -59,6 +63,7 @@ public class MD5HashValidator {
         }
 
         outputStream.close();
+        return successfulValidation;
     }
 
     private ArrayList<String> getFilePathsFromCopiedISOFiles() {
