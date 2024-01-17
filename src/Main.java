@@ -1,5 +1,5 @@
-// Sonic 3 AIR Music Mod Generator by Matt McCullough
-// This is to automate and streamline music mod creation for Sonic 3 AIR
+// Nintendont Folder Generator by Matt McCullough
+// This is to automate creating the folder structure for Nintendont
 
 import ui.NintendontFolderGeneratorUI;
 
