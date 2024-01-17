@@ -100,7 +100,7 @@ public class NintendontFolderGenerator {
                 String gameFolderPath = gameFolder.getAbsolutePath();
                 String copiedISOFilePath = gameFolderPath + filePathSeparator + "game" + fileExtension;
                 File copiedIsoFile = new File(copiedISOFilePath);
-                Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
                 copiedFilePaths.add(copiedIsoFile.toPath());
             }
         }
@@ -134,7 +134,7 @@ public class NintendontFolderGenerator {
                         copiedISOFilePath = gameFolderPath + filePathSeparator + "disc2" + fileExtension;
                     }
                     File copiedIsoFile = new File(copiedISOFilePath);
-                    Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
                     copiedFilePaths.add(copiedIsoFile.toPath());
                 }
             }
