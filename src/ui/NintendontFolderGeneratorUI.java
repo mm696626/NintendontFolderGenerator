@@ -18,7 +18,7 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
 
     //where to grab iso or ciso files from
     private String gameFolderPath = "";
-    private JButton generateNintendontGamesFolder, pickGamesFolder, validateGameFilesMD5;
+    private JButton generateNintendontGamesFolder, pickGamesFolder;
 
     private ArrayList<File> gameFileList;
     GridBagConstraints gridBagConstraints = null;
@@ -33,9 +33,6 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
         generateNintendontGamesFolder = new JButton("Generate Nintendont Games Folder");
         generateNintendontGamesFolder.addActionListener(this);
 
-        validateGameFilesMD5 = new JButton("Validate MD5 Hashes in Games Folder");
-        validateGameFilesMD5.addActionListener(this);
-
         setLayout(new GridBagLayout());
         gridBagConstraints = new GridBagConstraints();
 
@@ -46,10 +43,6 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
         gridBagConstraints.gridx=1;
         gridBagConstraints.gridy=0;
         add(generateNintendontGamesFolder, gridBagConstraints);
-
-        gridBagConstraints.gridx=2;
-        gridBagConstraints.gridy=0;
-        add(validateGameFilesMD5, gridBagConstraints);
     }
 
     @Override
@@ -81,16 +74,37 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
             if (isoFilePaths.exists()) {
                 NintendontFolderGenerator nintendontFolderGenerator = new NintendontFolderGenerator();
                 try {
-                    boolean isGenerationSuccessful = nintendontFolderGenerator.generateNintendontFolder();
 
-                    if (isGenerationSuccessful) {
-                        OldFileCleaner oldFileCleaner = new OldFileCleaner();
-                        oldFileCleaner.cleanFiles();
-                        JOptionPane.showMessageDialog(this, "Folder successfully generated!");
+                    boolean doCopyFiles = false;
+                    boolean canceledDialog = false;
+
+                    int copyFilesDialogResult = JOptionPane.showConfirmDialog(this, "Would you like to copy your game files to the generated folder? Pressing No will simply move your files instead.");
+                    if (copyFilesDialogResult == JOptionPane.YES_OPTION){
+                        doCopyFiles = true;
+                    }
+                    else if (copyFilesDialogResult == JOptionPane.NO_OPTION) {
+                        doCopyFiles = false;
                     }
                     else {
-                        JOptionPane.showMessageDialog(this, "Folder was not successfully generated!");
+                        canceledDialog = true;
                     }
+
+                    if (!canceledDialog) {
+                        boolean isGenerationSuccessful = nintendontFolderGenerator.generateNintendontFolder(doCopyFiles);
+
+                        if (isGenerationSuccessful) {
+                            OldFileCleaner oldFileCleaner = new OldFileCleaner();
+                            oldFileCleaner.cleanFiles();
+                            int calculateMD5HashesDialogResult = JOptionPane.showConfirmDialog(this, "Folder was successfully generated! Would you like to validate the MD5 hash of your game files in the generated games folder to ensure they are good .iso dumps?");
+                            if (calculateMD5HashesDialogResult == JOptionPane.YES_OPTION){
+                                calculateMD5Hashes();
+                            }
+                        }
+                        else {
+                            JOptionPane.showMessageDialog(this, "Folder was not successfully generated!");
+                        }
+                    }
+
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Something went wrong when generating the games folder");
                 }
@@ -99,27 +113,27 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                 JOptionPane.showMessageDialog(this, "You haven't selected any games!");
             }
         }
+    }
 
-        if (e.getSource() == validateGameFilesMD5) {
-            File copiedIsoFilePaths = new File("copiedIsoFilePaths.txt");
-            if (copiedIsoFilePaths.exists()) {
-                try {
-                    MD5HashValidator md5HashValidator = new MD5HashValidator();
-                    if (md5HashValidator.validateHashes()) {
-                        JOptionPane.showMessageDialog(this, "All hashes are known good dumps!");
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(this, "Not all hashes are known good dumps! Please look in the generated log file!");
-                    }
-                    OldFileCleaner oldFileCleaner = new OldFileCleaner();
-                    oldFileCleaner.deleteCopiedISOFilePaths();
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Something went wrong when validating hashes!");
+    private void calculateMD5Hashes() {
+        File copiedIsoFilePaths = new File("copiedIsoFilePaths.txt");
+        if (copiedIsoFilePaths.exists()) {
+            try {
+                MD5HashValidator md5HashValidator = new MD5HashValidator();
+                if (md5HashValidator.validateHashes()) {
+                    JOptionPane.showMessageDialog(this, "All hashes are known good dumps!");
                 }
+                else {
+                    JOptionPane.showMessageDialog(this, "Not all hashes are known good dumps! Please look in the generated log file!");
+                }
+                OldFileCleaner oldFileCleaner = new OldFileCleaner();
+                oldFileCleaner.deleteCopiedISOFilePaths();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Something went wrong when validating hashes!");
             }
-            else {
-                JOptionPane.showMessageDialog(this, "You haven't generated a games folder!");
-            }
+        }
+        else {
+            JOptionPane.showMessageDialog(this, "You haven't generated a games folder!");
         }
     }
 

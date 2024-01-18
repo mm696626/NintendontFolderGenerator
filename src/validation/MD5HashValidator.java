@@ -49,7 +49,7 @@ public class MD5HashValidator {
                     if (validateMD5(checksum)) {
                         String[] gameInfo = getGameInfoOfValidHash(checksum);
                         String gameInfoLog = generateGameInfoLog(gameInfo);
-                        outputStream.println(copiedFilePath + " " + gameInfoLog);
+                        outputStream.println(copiedFilePath + " has a checksum of " + checksum + gameInfoLog);
                     }
                     else {
                         outputStream.println(copiedFilePath + " does not have a known hash for a GameCube game .iso dump.");
@@ -145,7 +145,7 @@ public class MD5HashValidator {
 
     private String getGameRegion(String gameID) {
         if (gameID.charAt(3) == 'E') {
-            return "USA";
+            return "US";
         }
 
         else if (gameID.charAt(3) == 'P') {
@@ -179,6 +179,6 @@ public class MD5HashValidator {
             revisionLog = " Revision " + revision;
         }
 
-        return "is a clean dump of the " + gameRegion + " version of " + gameTitle + discNumLog + revisionLog;
+        return " which is a clean dump of the " + gameRegion + " version of " + gameTitle + discNumLog + revisionLog;
     }
 }

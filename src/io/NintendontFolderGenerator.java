@@ -14,7 +14,7 @@ public class NintendontFolderGenerator {
 
     private ArrayList<Path> copiedFilePaths = new ArrayList<>(); //the paths of the copied .iso and .ciso files (will be used if the user wants to validate MD5 checksums)
 
-    public boolean generateNintendontFolder() throws IOException {
+    public boolean generateNintendontFolder(boolean doCopyFiles) throws IOException {
 
         ArrayList<File> files = getFilePathsFromFile();
         ArrayList<File> multiDiscFiles = getMultiDiscFilePathsFromFile();
@@ -27,8 +27,8 @@ public class NintendontFolderGenerator {
         boolean ismultiDiscGameFilesCopied = false;
 
         if (gamesFolder.mkdirs()) {
-            isGameFilesCopied = copyGameFiles(files, gamesFolder.getAbsolutePath() + filePathSeparator, filePathSeparator);
-            ismultiDiscGameFilesCopied = copyMultiDiscGameFiles(multiDiscFiles, gamesFolder.getAbsolutePath() + filePathSeparator, filePathSeparator);
+            isGameFilesCopied = copyGameFiles(files, gamesFolder.getAbsolutePath() + filePathSeparator, filePathSeparator, doCopyFiles);
+            ismultiDiscGameFilesCopied = copyMultiDiscGameFiles(multiDiscFiles, gamesFolder.getAbsolutePath() + filePathSeparator, filePathSeparator, doCopyFiles);
         }
 
         CopiedISOFilePathSaver copiedISOFilePathSaver = new CopiedISOFilePathSaver();
@@ -87,7 +87,7 @@ public class NintendontFolderGenerator {
         return files;
     }
 
-    private boolean copyGameFiles(ArrayList<File> files, String destinationPath, String filePathSeparator) throws IOException {
+    private boolean copyGameFiles(ArrayList<File> files, String destinationPath, String filePathSeparator, boolean doCopyFiles) throws IOException {
 
         for (int i=0; i<files.size(); i++) {
             String isoFilePath = files.get(i).getAbsolutePath();
@@ -100,7 +100,13 @@ public class NintendontFolderGenerator {
                 String gameFolderPath = gameFolder.getAbsolutePath();
                 String copiedISOFilePath = gameFolderPath + filePathSeparator + "game" + fileExtension;
                 File copiedIsoFile = new File(copiedISOFilePath);
-                Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+
+                if (doCopyFiles) {
+                    Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+                }
+                else {
+                    Files.move(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
                 copiedFilePaths.add(copiedIsoFile.toPath());
             }
         }
@@ -108,7 +114,7 @@ public class NintendontFolderGenerator {
         return true;
     }
 
-    private boolean copyMultiDiscGameFiles(ArrayList<File> files, String destinationPath, String filePathSeparator) throws IOException {
+    private boolean copyMultiDiscGameFiles(ArrayList<File> files, String destinationPath, String filePathSeparator, boolean doCopyFiles) throws IOException {
 
         boolean successfullyCopied = true;
 
@@ -134,7 +140,13 @@ public class NintendontFolderGenerator {
                         copiedISOFilePath = gameFolderPath + filePathSeparator + "disc2" + fileExtension;
                     }
                     File copiedIsoFile = new File(copiedISOFilePath);
-                    Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+
+                    if (doCopyFiles) {
+                        Files.copy(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+                    }
+                    else {
+                        Files.move(files.get(i).toPath(), copiedIsoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    }
                     copiedFilePaths.add(copiedIsoFile.toPath());
                 }
             }
