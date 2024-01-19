@@ -4,7 +4,7 @@ import io.ISOFilePathSaver;
 import io.NintendontFolderGenerator;
 import io.OldFileCleaner;
 import validation.ExtensionValidator;
-import validation.MD5HashValidator;
+import validation.MD5ChecksumValidator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -95,9 +95,9 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                         if (isGenerationSuccessful) {
                             OldFileCleaner oldFileCleaner = new OldFileCleaner();
                             oldFileCleaner.cleanFiles();
-                            int calculateMD5HashesDialogResult = JOptionPane.showConfirmDialog(this, "Folder was successfully generated! Would you like to validate the MD5 hash of your game files in the generated games folder to ensure they are good .iso dumps?");
-                            if (calculateMD5HashesDialogResult == JOptionPane.YES_OPTION){
-                                calculateMD5Hashes();
+                            int calculateMD5ChecksumsDialogResult = JOptionPane.showConfirmDialog(this, "Folder was successfully generated! Would you like to validate the MD5 checksums of your game files in the generated games folder to ensure they are good .iso dumps?");
+                            if (calculateMD5ChecksumsDialogResult == JOptionPane.YES_OPTION){
+                                calculateMD5Checksums();
                             }
                         }
                         else {
@@ -115,21 +115,21 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
         }
     }
 
-    private void calculateMD5Hashes() {
+    private void calculateMD5Checksums() {
         File copiedIsoFilePaths = new File("copiedIsoFilePaths.txt");
         if (copiedIsoFilePaths.exists()) {
             try {
-                MD5HashValidator md5HashValidator = new MD5HashValidator();
-                if (md5HashValidator.validateHashes()) {
-                    JOptionPane.showMessageDialog(this, "All hashes are known good dumps!");
+                MD5ChecksumValidator md5ChecksumValidator = new MD5ChecksumValidator();
+                if (md5ChecksumValidator.validateChecksums()) {
+                    JOptionPane.showMessageDialog(this, "All checksums are known good dumps!");
                 }
                 else {
-                    JOptionPane.showMessageDialog(this, "Not all hashes are known good dumps! Please look in the generated log file!");
+                    JOptionPane.showMessageDialog(this, "Not all checksums are known good dumps! Please look in the generated log file!");
                 }
                 OldFileCleaner oldFileCleaner = new OldFileCleaner();
                 oldFileCleaner.deleteCopiedISOFilePaths();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Something went wrong when validating hashes!");
+                JOptionPane.showMessageDialog(this, "Something went wrong when validating checksums!");
             }
         }
         else {

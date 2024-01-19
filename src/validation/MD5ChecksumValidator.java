@@ -14,9 +14,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class MD5HashValidator {
+public class MD5ChecksumValidator {
 
-    public boolean validateHashes() throws IOException, NoSuchAlgorithmException {
+    public boolean validateChecksums() throws IOException, NoSuchAlgorithmException {
         ArrayList<String> copiedFilePaths = getFilePathsFromCopiedISOFiles();
         ExtensionValidator extensionValidator = new ExtensionValidator();
 
@@ -25,7 +25,7 @@ public class MD5HashValidator {
         PrintWriter outputStream = null;
 
         try {
-            outputStream = new PrintWriter( new FileOutputStream("MD5HashResults.txt"));
+            outputStream = new PrintWriter( new FileOutputStream("MD5ChecksumResults.txt"));
         }
         catch (FileNotFoundException f) {
             System.out.println("File does not exist");
@@ -47,12 +47,12 @@ public class MD5HashValidator {
                 else {
                     String checksum = calculateMD5(copiedFilePath);
                     if (validateMD5(checksum)) {
-                        String[] gameInfo = getGameInfoOfValidHash(checksum);
+                        String[] gameInfo = getGameInfoOfValidChecksum(checksum);
                         String gameInfoLog = generateGameInfoLog(gameInfo);
                         outputStream.println(copiedFilePath + " has a checksum of " + checksum + gameInfoLog);
                     }
                     else {
-                        outputStream.println(copiedFilePath + " does not have a known hash for a GameCube game .iso dump.");
+                        outputStream.println(copiedFilePath + " does not have a known checksum for a GameCube game .iso dump.");
                         successfulValidation = false;
                     }
                 }
@@ -119,7 +119,7 @@ public class MD5HashValidator {
         return false;
     }
 
-    private String[] getGameInfoOfValidHash(String checksum) {
+    private String[] getGameInfoOfValidChecksum(String checksum) {
         Scanner inputStream = null;
 
         try {
