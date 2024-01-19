@@ -95,13 +95,14 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                         String gamesFolderPath = gamesFolderBaseDir + "games";
                         File gamesFolder = new File(gamesFolderPath);
                         boolean generateFolder = false;
-                        boolean ignoreNotSuccessfulPrompt = false; //ignores the not successfully generated if folder exists since it's a false negative
 
                         if (gamesFolder.exists()) {
                             int overwriteGamesFolderDialogResult = JOptionPane.showConfirmDialog(this, "A games folder already exists at " + gamesFolder.getAbsolutePath() + ". Would you like to overwrite it?");
                             if (overwriteGamesFolderDialogResult == JOptionPane.YES_OPTION){
-                                generateFolder = true;
-                                ignoreNotSuccessfulPrompt = true;
+
+                                if (deleteDirectory(gamesFolderPath))  {
+                                    generateFolder = true;
+                                }
                             }
                         }
 
@@ -121,14 +122,7 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                                 }
                             }
                             else {
-                                if (!ignoreNotSuccessfulPrompt) {
-                                    JOptionPane.showMessageDialog(this, "Folder was not successfully generated!");
-                                }
-                                else {
-                                    OldFileCleaner oldFileCleaner = new OldFileCleaner();
-                                    oldFileCleaner.cleanFiles();
-                                    JOptionPane.showMessageDialog(this, "Folder was overwritten successfully!");
-                                }
+                                JOptionPane.showMessageDialog(this, "Folder was not successfully generated!");
                             }
                         }
                     }
@@ -190,5 +184,22 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
         }
 
         return isoFileList;
+    }
+
+    private boolean deleteDirectory(String folderPath) {
+
+        File[] folderFileList = new File(folderPath).listFiles();
+
+        //Grab all files and check subfolders if the file is a directory
+        for (File file: folderFileList) {
+            if (file.isDirectory()) {
+                deleteDirectory(file.getAbsolutePath());
+            }
+
+            file.delete();
+        }
+
+        File folder = new File(folderPath);
+        return folder.delete();
     }
 }
