@@ -90,18 +90,46 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                     }
 
                     if (!canceledDialog) {
-                        boolean isGenerationSuccessful = nintendontFolderGenerator.generateNintendontFolder(doCopyFiles);
 
-                        if (isGenerationSuccessful) {
-                            OldFileCleaner oldFileCleaner = new OldFileCleaner();
-                            oldFileCleaner.cleanFiles();
-                            int calculateMD5ChecksumsDialogResult = JOptionPane.showConfirmDialog(this, "Folder was successfully generated! Would you like to validate the MD5 checksums of your game files in the generated games folder to ensure they are good .iso dumps?");
-                            if (calculateMD5ChecksumsDialogResult == JOptionPane.YES_OPTION){
-                                calculateMD5Checksums();
+                        String gamesFolderBaseDir = getGamesFolderBaseDir();
+                        String gamesFolderPath = gamesFolderBaseDir + "games";
+                        File gamesFolder = new File(gamesFolderPath);
+                        boolean generateFolder = false;
+                        boolean ignoreNotSuccessfulPrompt = false; //ignores the not successfully generated if folder exists since it's a false negative
+
+                        if (gamesFolder.exists()) {
+                            int overwriteGamesFolderDialogResult = JOptionPane.showConfirmDialog(this, "A games folder already exists at " + gamesFolder.getAbsolutePath() + ". Would you like to overwrite it?");
+                            if (overwriteGamesFolderDialogResult == JOptionPane.YES_OPTION){
+                                generateFolder = true;
+                                ignoreNotSuccessfulPrompt = true;
                             }
                         }
+
                         else {
-                            JOptionPane.showMessageDialog(this, "Folder was not successfully generated!");
+                            generateFolder = true;
+                        }
+
+                        if (generateFolder) {
+                            boolean isGenerationSuccessful = nintendontFolderGenerator.generateNintendontFolder(doCopyFiles);
+
+                            if (isGenerationSuccessful) {
+                                OldFileCleaner oldFileCleaner = new OldFileCleaner();
+                                oldFileCleaner.cleanFiles();
+                                int calculateMD5ChecksumsDialogResult = JOptionPane.showConfirmDialog(this, "Folder was successfully generated! Would you like to validate the MD5 checksums of your game files in the generated games folder to ensure they are good .iso dumps?");
+                                if (calculateMD5ChecksumsDialogResult == JOptionPane.YES_OPTION){
+                                    calculateMD5Checksums();
+                                }
+                            }
+                            else {
+                                if (!ignoreNotSuccessfulPrompt) {
+                                    JOptionPane.showMessageDialog(this, "Folder was not successfully generated!");
+                                }
+                                else {
+                                    OldFileCleaner oldFileCleaner = new OldFileCleaner();
+                                    oldFileCleaner.cleanFiles();
+                                    JOptionPane.showMessageDialog(this, "Folder was overwritten successfully!");
+                                }
+                            }
                         }
                     }
 
@@ -113,6 +141,12 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                 JOptionPane.showMessageDialog(this, "You haven't selected any games!");
             }
         }
+    }
+
+    private String getGamesFolderBaseDir() {
+        File isoFilePaths = new File("isoFilePaths.txt");
+        String isoFilePathsFilePath = isoFilePaths.getAbsolutePath();
+        return isoFilePathsFilePath.substring(0, isoFilePathsFilePath.lastIndexOf("isoFilePaths.txt"));
     }
 
     private void calculateMD5Checksums() {
