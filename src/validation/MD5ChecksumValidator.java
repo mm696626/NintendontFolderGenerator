@@ -52,7 +52,7 @@ public class MD5ChecksumValidator {
                         outputStream.println(copiedFilePath + " has a checksum of " + checksum + gameInfoLog);
                     }
                     else {
-                        outputStream.println(copiedFilePath + " does not have a known checksum for a GameCube game .iso dump.");
+                        outputStream.println(copiedFilePath + " has a checksum of " + checksum + " which is not a known checksum for a GameCube game .iso dump.");
                         successfulValidation = false;
                     }
                 }
