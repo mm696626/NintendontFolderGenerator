@@ -36,11 +36,6 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
         gridBagConstraints.gridx=0;
         gridBagConstraints.gridy=0;
         add(generateNintendontGamesFolder, gridBagConstraints);
-
-        File md5ChecksumFile = new File("gcn_md5.txt");
-        if (!md5ChecksumFile.exists()) {
-            JOptionPane.showMessageDialog(this, "The MD5 checksums file does not exist! This tool will not function properly without it!");
-        }
     }
 
     @Override
@@ -48,7 +43,7 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
 
         if (e.getSource() == generateNintendontGamesFolder) {
 
-            JFileChooser fileChooser = new JFileChooser(getRunningDir());
+            JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             int response = fileChooser.showOpenDialog(null);
             if (response == JFileChooser.APPROVE_OPTION) {
@@ -141,11 +136,6 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
         return isoFilePathsFilePath.substring(0, isoFilePathsFilePath.lastIndexOf("isoFilePaths.txt"));
     }
 
-    private String getRunningDir() {
-        File md5Checksums = new File("gcn_md5.txt");
-        String md5ChecksumsPath = md5Checksums.getAbsolutePath();
-        return md5ChecksumsPath.substring(0, md5ChecksumsPath.lastIndexOf("gcn_md5.txt"));
-    }
 
     private void calculateMD5Checksums() {
         File copiedIsoFilePaths = new File("copiedIsoFilePaths.txt");
