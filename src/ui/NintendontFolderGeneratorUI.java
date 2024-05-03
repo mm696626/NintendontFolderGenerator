@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class NintendontFolderGeneratorUI extends JFrame implements ActionListener {
@@ -107,12 +108,17 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                             boolean isGenerationSuccessful = nintendontFolderGenerator.generateNintendontFolder(doCopyFiles);
 
                             if (isGenerationSuccessful) {
-                                OldFileCleaner oldFileCleaner = new OldFileCleaner();
-                                oldFileCleaner.cleanFiles();
                                 int calculateMD5ChecksumsDialogResult = JOptionPane.showConfirmDialog(this, "Folder was successfully generated! Would you like to validate the MD5 checksums of your game files in the generated games folder to ensure they are good .iso dumps?");
                                 if (calculateMD5ChecksumsDialogResult == JOptionPane.YES_OPTION){
                                     calculateMD5Checksums();
                                 }
+                                int moveToExternalStorageDialogResult = JOptionPane.showConfirmDialog(this, "Would you like to move the generated folder to the root of your SD Card/USB? (This feature is only supported on Windows and Mac)");
+                                if (moveToExternalStorageDialogResult == JOptionPane.YES_OPTION){
+                                    moveToExternalStorage();
+                                }
+
+                                OldFileCleaner oldFileCleaner = new OldFileCleaner();
+                                oldFileCleaner.cleanFiles();
                             }
                             else {
                                 JOptionPane.showMessageDialog(this, "Folder was not successfully generated!");
@@ -195,5 +201,12 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
 
         File folder = new File(folderPath);
         return folder.delete();
+    }
+
+    private void moveToExternalStorage() throws IOException {
+        ExternalStorageMoverUI externalStorageMoverUI = new ExternalStorageMoverUI();
+        externalStorageMoverUI.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        externalStorageMoverUI.pack();
+        externalStorageMoverUI.setVisible(true);
     }
 }
