@@ -44,7 +44,7 @@ public class ExternalStorageMoverUI extends JFrame implements ActionListener {
 
             String destinationPath = String.valueOf(driveDropdown.getSelectedItem());
 
-            int prepareToMoveFilesDialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to move the games file to drive " + destinationPath + "?");
+            int prepareToMoveFilesDialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to move the games folder to drive " + destinationPath + "?");
             if (prepareToMoveFilesDialogResult == JOptionPane.YES_OPTION && canMoveToDrive) {
 
                 String gamesFolderBaseDir = getGamesFolderBaseDir();
