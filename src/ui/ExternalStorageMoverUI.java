@@ -27,6 +27,9 @@ public class ExternalStorageMoverUI extends JFrame implements ActionListener {
     private JLabel gameFolderSize;
     private long gameFolderTotalSize;
     private JLabel externalDriveFreeSpace;
+    private double externalDriveFreeSpaceInGB;
+    private double gameFolderTotalSizeInGB;
+    private boolean canMoveToDrive = false;
 
     public ExternalStorageMoverUI() throws IOException {
         setTitle("Move to External Storage");
@@ -38,14 +41,27 @@ public class ExternalStorageMoverUI extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == moveToExternalDrive) {
+
             String destinationPath = String.valueOf(driveDropdown.getSelectedItem());
-            String gamesFolderBaseDir = getGamesFolderBaseDir();
-            String filePathSeparator = gamesFolderBaseDir.substring(gamesFolderBaseDir.length()-1);
-            try {
-                moveGameFilesToExternalDrive(getDirectoryList(gameFolderPath), destinationPath + filePathSeparator + "games" + filePathSeparator, filePathSeparator);
-                JOptionPane.showMessageDialog(this, "Games folder successfully moved!");
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
+
+            int prepareToMoveFilesDialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to move the games file to drive " + destinationPath + "?");
+            if (prepareToMoveFilesDialogResult == JOptionPane.YES_OPTION && canMoveToDrive) {
+
+                String gamesFolderBaseDir = getGamesFolderBaseDir();
+                String filePathSeparator = gamesFolderBaseDir.substring(gamesFolderBaseDir.length()-1);
+                String OS = System.getProperty("os.name").toLowerCase();
+                if (OS.contains("windows")) {
+                    destinationPath = destinationPath.substring(0, destinationPath.indexOf(filePathSeparator));
+                }
+                try {
+                    moveGameFilesToExternalDrive(getDirectoryList(gameFolderPath), destinationPath + filePathSeparator + "games" + filePathSeparator, filePathSeparator);
+                    JOptionPane.showMessageDialog(this, "Games folder successfully moved!");
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            else if (prepareToMoveFilesDialogResult == JOptionPane.YES_OPTION && !canMoveToDrive) {
+                JOptionPane.showMessageDialog(this, "There is not enough space on the selected drive!");
             }
         }
     }
@@ -85,7 +101,7 @@ public class ExternalStorageMoverUI extends JFrame implements ActionListener {
 
         getDriveFreeSpace(roots[0]);
 
-        double gameFolderTotalSizeInGB = (double)gameFolderTotalSize / 1000000000;
+        gameFolderTotalSizeInGB = (double)gameFolderTotalSize / BYTES_IN_GB;
         gameFolderTotalSizeInGB = Math.round(gameFolderTotalSizeInGB * 100.0);
         gameFolderTotalSizeInGB = gameFolderTotalSizeInGB/100.0;
 
@@ -156,7 +172,7 @@ public class ExternalStorageMoverUI extends JFrame implements ActionListener {
 
     private void getDriveFreeSpace(File root) throws IOException {
         FileStore fileStore = Files.getFileStore(root.toPath());
-        double externalDriveFreeSpaceInGB = (double)fileStore.getUsableSpace() / BYTES_IN_GB;
+        externalDriveFreeSpaceInGB = (double)fileStore.getUsableSpace() / BYTES_IN_GB;
         externalDriveFreeSpaceInGB = Math.round(externalDriveFreeSpaceInGB * 100.0);
         externalDriveFreeSpaceInGB = externalDriveFreeSpaceInGB/100.0;
         if (externalDriveFreeSpace != null) {
@@ -164,6 +180,13 @@ public class ExternalStorageMoverUI extends JFrame implements ActionListener {
         }
         else {
             externalDriveFreeSpace = new JLabel("Drive Free Space: " + externalDriveFreeSpaceInGB + " GB");
+        }
+
+        if (gameFolderTotalSizeInGB < externalDriveFreeSpaceInGB) {
+            canMoveToDrive = true;
+        }
+        else {
+            canMoveToDrive = false;
         }
     }
 
