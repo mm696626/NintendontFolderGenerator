@@ -11,6 +11,7 @@
 * Press Select Folder with Games and Generate Nintendont Games Folder and then the tool will prompt for a folder to look for your GameCube games
     * It will look through subfolders as well
     * It will automatically create the folder if games are in the folder selected
+* Please be patient when your folder is being generated. It'll look like nothing is happening, but wait for the confirmation that it's done
 * Move that newly created folder onto the root of your SD card or USB
   * This can now be done automatically for you after generation. 
   * Unfortunately no Linux support since I don't have a Linux machine to test this with, so you still have the move the folder manually

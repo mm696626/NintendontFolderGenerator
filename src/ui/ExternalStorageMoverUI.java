@@ -209,9 +209,9 @@ public class ExternalStorageMoverUI extends JFrame implements ActionListener {
             if (externalDriveGameFolder.exists()) {
                 externalDriveGameFolder.delete();
             }
-            else {
-                externalDriveGameFolder.mkdirs();
-            }
+
+            externalDriveGameFolder.mkdirs();
+
 
             for (int fileNum=0; fileNum<isoFiles.length; fileNum++) {
                 File isoFile = isoFiles[fileNum];
