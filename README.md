@@ -12,6 +12,8 @@
     * It will look through subfolders as well
     * It will automatically create the folder if games are in the folder selected
 * Move that newly created folder onto the root of your SD card or USB
+  * This can now be done automatically for you after generation. 
+  * Unfortunately no Linux support since I don't have a Linux machine to test this with, so you still have the move the folder manually
 * Have fun playing your games on your Wii or Wii U!
 
 ### Note for Multi Disc Games
