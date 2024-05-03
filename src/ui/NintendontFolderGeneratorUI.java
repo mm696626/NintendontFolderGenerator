@@ -72,7 +72,7 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                     boolean doCopyFiles = false;
                     boolean canceledDialog = false;
 
-                    int copyFilesDialogResult = JOptionPane.showConfirmDialog(this, "Would you like to copy your game files to the generated folder? Pressing No will simply move your files instead.");
+                    int copyFilesDialogResult = JOptionPane.showConfirmDialog(this, "<html>Would you like to copy your game files to the generated folder? Pressing No will simply move your files instead.<br>Please be patient once Yes or No is selected. It'll take a bit depending on how many games you have, so just wait for the confirmation that it's done</html>");
                     if (copyFilesDialogResult == JOptionPane.YES_OPTION){
                         doCopyFiles = true;
                     }
@@ -112,7 +112,7 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                                 if (calculateMD5ChecksumsDialogResult == JOptionPane.YES_OPTION){
                                     calculateMD5Checksums();
                                 }
-                                int moveToExternalStorageDialogResult = JOptionPane.showConfirmDialog(this, "Would you like to move the generated folder to the root of your SD Card/USB? (This feature is only supported on Windows and Mac)");
+                                int moveToExternalStorageDialogResult = JOptionPane.showConfirmDialog(this, "<html>Would you like to move the generated folder to the root of your SD Card/USB? <b>(This feature is only supported on Windows and Mac)</b><br>Please be patient once Yes is selected. It'll take a bit depending on how many games you have, so just wait for the confirmation that it's done</html>");
                                 if (moveToExternalStorageDialogResult == JOptionPane.YES_OPTION){
                                     moveToExternalStorage();
                                 }
