@@ -64,6 +64,16 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                 return;
             }
 
+            int moveAllGamesDialogResult = JOptionPane.showConfirmDialog(this, "Would you like to move all the games in the selected folder? Pressing No will allow you to choose specific games to move");
+            if (moveAllGamesDialogResult != JOptionPane.YES_OPTION){
+                GameSelectionUI gameSelectionUI = new GameSelectionUI(gameFileList);
+                gameSelectionUI.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                gameSelectionUI.pack();
+                gameSelectionUI.setVisible(true);
+                setVisible(false);
+                return;
+            }
+
             File isoFilePaths = new File("isoFilePaths.txt");
             if (isoFilePaths.exists()) {
                 NintendontFolderGenerator nintendontFolderGenerator = new NintendontFolderGenerator();
