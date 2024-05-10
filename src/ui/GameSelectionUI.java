@@ -19,10 +19,13 @@ public class GameSelectionUI extends JFrame implements ActionListener {
     private ArrayList<JLabel> isoFilePaths;
     private ArrayList<File> isoFiles;
     private JButton generateNintendontGamesFolder;
+    private Container container;
 
     public GameSelectionUI(ArrayList<File> isoFiles) {
         this.isoFiles = isoFiles;
         setTitle("Select Games for Games Folder");
+        this.container = getContentPane();
+        container.setLayout(new BorderLayout());
         generateUI();
     }
     @Override
@@ -56,8 +59,10 @@ public class GameSelectionUI extends JFrame implements ActionListener {
         generateNintendontGamesFolder = new JButton("Generate Nintendont Games Folder");
         generateNintendontGamesFolder.addActionListener(this);
         jPanel.add(generateNintendontGamesFolder);
-
         add(jPanel);
+
+        JScrollPane jScrollPane = new JScrollPane(jPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        container.add(jScrollPane);
     }
 
     private ArrayList<File> getSelectedGames() {
