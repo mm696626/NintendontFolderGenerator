@@ -105,7 +105,7 @@ public class ExternalStorageMoverUI extends JFrame implements ActionListener {
         gameFolderTotalSizeInGB = Math.round(gameFolderTotalSizeInGB * 100.0);
         gameFolderTotalSizeInGB = gameFolderTotalSizeInGB/100.0;
 
-        gameFolderSize = new JLabel("Game Folder Size: " + gameFolderTotalSizeInGB + " GB");
+        gameFolderSize = new JLabel("Games Folder Size: " + gameFolderTotalSizeInGB + " GB");
 
         moveToExternalDrive = new JButton("Move to this Drive");
         moveToExternalDrive.addActionListener(this);

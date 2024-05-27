@@ -19,24 +19,41 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
 
     //where to grab iso or ciso files from
     private String gameFolderPath = "";
-    private JButton generateNintendontGamesFolder;
+    private JButton generateNintendontGamesFolder, validateMD5Checksums, moveToExternalStorage;
 
     private ArrayList<File> gameFileList;
-    GridBagConstraints gridBagConstraints = null;
 
     public NintendontFolderGeneratorUI()
     {
         setTitle("Nintendont Folder Generator");
+        generateUI();
+    }
 
-        generateNintendontGamesFolder = new JButton("Select Folder with Games and Generate Nintendont Games Folder");
+    private void generateUI() {
+        JPanel mainMenuPanel = new JPanel();
+        GridLayout mainMenuGridLayout = new GridLayout(1, 1);
+        mainMenuPanel.setLayout(mainMenuGridLayout);
+
+        JPanel generatorToolsPanel = new JPanel();
+        GridLayout generatorToolsGridLayout = new GridLayout(2,1);
+        generatorToolsPanel.setLayout(generatorToolsGridLayout);
+
+        generateNintendontGamesFolder = new JButton("Select Folder with Games");
         generateNintendontGamesFolder.addActionListener(this);
+        mainMenuPanel.add(generateNintendontGamesFolder);
 
-        setLayout(new GridBagLayout());
-        gridBagConstraints = new GridBagConstraints();
+        validateMD5Checksums = new JButton("Validate MD5 Checksums of Games Folder");
+        validateMD5Checksums.addActionListener(this);
+        generatorToolsPanel.add(validateMD5Checksums);
 
-        gridBagConstraints.gridx=0;
-        gridBagConstraints.gridy=0;
-        add(generateNintendontGamesFolder, gridBagConstraints);
+        moveToExternalStorage = new JButton("Move Games Folder to External Storage");
+        moveToExternalStorage.addActionListener(this);
+        generatorToolsPanel.add(moveToExternalStorage);
+
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.add("Generate Folder", mainMenuPanel);
+        tabbedPane.add("Generator Tools", generatorToolsPanel);
+        add(tabbedPane);
     }
 
     @Override
@@ -118,15 +135,6 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                             boolean isGenerationSuccessful = nintendontFolderGenerator.generateNintendontFolder(doCopyFiles);
 
                             if (isGenerationSuccessful) {
-                                int calculateMD5ChecksumsDialogResult = JOptionPane.showConfirmDialog(this, "Folder was successfully generated! Would you like to validate the MD5 checksums of your game files in the generated games folder to ensure they are good .iso dumps?");
-                                if (calculateMD5ChecksumsDialogResult == JOptionPane.YES_OPTION){
-                                    calculateMD5Checksums();
-                                }
-                                int moveToExternalStorageDialogResult = JOptionPane.showConfirmDialog(this, "<html>Would you like to move the generated folder to the root of your SD Card/USB? <b>(This feature is only supported on Windows and Mac)</b><br>Please be patient once Yes is selected. It'll take a bit depending on how many games you have, so just wait for the confirmation that it's done</html>");
-                                if (moveToExternalStorageDialogResult == JOptionPane.YES_OPTION){
-                                    moveToExternalStorage();
-                                }
-
                                 OldFileCleaner oldFileCleaner = new OldFileCleaner();
                                 oldFileCleaner.cleanFiles();
                             }
@@ -142,6 +150,18 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
             }
             else {
                 JOptionPane.showMessageDialog(this, "You haven't selected any games!");
+            }
+        }
+
+        if (e.getSource() == validateMD5Checksums) {
+            calculateMD5Checksums();
+        }
+
+        if (e.getSource() == moveToExternalStorage) {
+            try {
+                moveToExternalStorage();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         }
     }
@@ -214,9 +234,18 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
     }
 
     private void moveToExternalStorage() throws IOException {
-        ExternalStorageMoverUI externalStorageMoverUI = new ExternalStorageMoverUI();
-        externalStorageMoverUI.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        externalStorageMoverUI.pack();
-        externalStorageMoverUI.setVisible(true);
+        String gamesFolderBaseDir = getGamesFolderBaseDir();
+        String gamesFolderPath = gamesFolderBaseDir + "games";
+        File gamesFolder = new File(gamesFolderPath);
+
+        if (gamesFolder.exists()) {
+            ExternalStorageMoverUI externalStorageMoverUI = new ExternalStorageMoverUI();
+            externalStorageMoverUI.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            externalStorageMoverUI.pack();
+            externalStorageMoverUI.setVisible(true);
+        }
+        else {
+            JOptionPane.showMessageDialog(this, "You haven't generated a games folder!");
+        }
     }
 }

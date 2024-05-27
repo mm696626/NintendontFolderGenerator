@@ -8,7 +8,7 @@
 * Have GameCube games in .iso or .ciso format
 * Open the tool (you'll need the latest JDK installed for that)
     * Link to JDK: https://www.oracle.com/java/technologies/downloads/
-* Press Select Folder with Games and Generate Nintendont Games Folder and then the tool will prompt for a folder to look for your GameCube games
+* Press Select Folder with Games and then the tool will prompt for a folder to look for your GameCube games
     * It will look through subfolders as well
     * It will automatically create the folder if games are in the folder selected
 * Please be patient when your folder is being generated. It'll look like nothing is happening, but wait for the confirmation that it's done
