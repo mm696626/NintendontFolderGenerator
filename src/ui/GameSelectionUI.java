@@ -3,14 +3,12 @@ package ui;
 import io.ISOFilePathSaver;
 import io.NintendontFolderGenerator;
 import io.OldFileCleaner;
-import validation.MD5ChecksumValidator;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class GameSelectionUI extends JFrame implements ActionListener {
@@ -121,17 +119,10 @@ public class GameSelectionUI extends JFrame implements ActionListener {
                         boolean isGenerationSuccessful = nintendontFolderGenerator.generateNintendontFolder(doCopyFiles);
 
                         if (isGenerationSuccessful) {
-                            int calculateMD5ChecksumsDialogResult = JOptionPane.showConfirmDialog(this, "Folder was successfully generated! Would you like to validate the MD5 checksums of your game files in the generated games folder to ensure they are good .iso dumps?");
-                            if (calculateMD5ChecksumsDialogResult == JOptionPane.YES_OPTION){
-                                calculateMD5Checksums();
-                            }
-                            int moveToExternalStorageDialogResult = JOptionPane.showConfirmDialog(this, "<html>Would you like to move the generated folder to the root of your SD Card/USB? <b>(This feature is only supported on Windows and Mac)</b><br>Please be patient once Yes is selected. It'll take a bit depending on how many games you have, so just wait for the confirmation that it's done</html>");
-                            if (moveToExternalStorageDialogResult == JOptionPane.YES_OPTION){
-                                moveToExternalStorage();
-                            }
-
                             OldFileCleaner oldFileCleaner = new OldFileCleaner();
                             oldFileCleaner.cleanFiles();
+                            JOptionPane.showMessageDialog(this, "Folder was successfully generated!");
+                            setVisible(false);
                         }
                         else {
                             JOptionPane.showMessageDialog(this, "Folder was not successfully generated!");
@@ -154,28 +145,6 @@ public class GameSelectionUI extends JFrame implements ActionListener {
         return isoFilePathsFilePath.substring(0, isoFilePathsFilePath.lastIndexOf("isoFilePaths.txt"));
     }
 
-    private void calculateMD5Checksums() {
-        File copiedIsoFilePaths = new File("copiedIsoFilePaths.txt");
-        if (copiedIsoFilePaths.exists()) {
-            try {
-                MD5ChecksumValidator md5ChecksumValidator = new MD5ChecksumValidator();
-                if (md5ChecksumValidator.validateChecksums()) {
-                    JOptionPane.showMessageDialog(this, "All checksums are known good dumps!");
-                }
-                else {
-                    JOptionPane.showMessageDialog(this, "Not all checksums are known good dumps! Please look in the generated log file!");
-                }
-                OldFileCleaner oldFileCleaner = new OldFileCleaner();
-                oldFileCleaner.deleteCopiedISOFilePaths();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Something went wrong when validating checksums!");
-            }
-        }
-        else {
-            JOptionPane.showMessageDialog(this, "You haven't generated a games folder!");
-        }
-    }
-
     private boolean deleteDirectory(String folderPath) {
 
         File[] folderFileList = new File(folderPath).listFiles();
@@ -191,12 +160,5 @@ public class GameSelectionUI extends JFrame implements ActionListener {
 
         File folder = new File(folderPath);
         return folder.delete();
-    }
-
-    private void moveToExternalStorage() throws IOException {
-        ExternalStorageMoverUI externalStorageMoverUI = new ExternalStorageMoverUI();
-        externalStorageMoverUI.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        externalStorageMoverUI.pack();
-        externalStorageMoverUI.setVisible(true);
     }
 }

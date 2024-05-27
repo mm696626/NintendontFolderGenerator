@@ -87,7 +87,6 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                 gameSelectionUI.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
                 gameSelectionUI.pack();
                 gameSelectionUI.setVisible(true);
-                setVisible(false);
                 return;
             }
 
@@ -137,6 +136,7 @@ public class NintendontFolderGeneratorUI extends JFrame implements ActionListene
                             if (isGenerationSuccessful) {
                                 OldFileCleaner oldFileCleaner = new OldFileCleaner();
                                 oldFileCleaner.cleanFiles();
+                                JOptionPane.showMessageDialog(this, "Folder was successfully generated!");
                             }
                             else {
                                 JOptionPane.showMessageDialog(this, "Folder was not successfully generated!");
